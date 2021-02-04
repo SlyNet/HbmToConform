@@ -1,0 +1,101 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+using System.ComponentModel;
+using NHibernate.Mapping.ByCode;
+using NHibernate.Mapping.ByCode.Conformist;
+
+namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
+{
+    [Localizable(false)]
+    public class <#=Model.DomainClassName#>Map : ClassMapping<<#= Model.FullType #>> 
+    {
+        public <#=Model.DomainClassName#>Map()
+        {
+            Table("<#= Model.ClassTable #>");
+            Lazy(<#= Model.Lazy.ToString().ToLower() #>); 
+            Id(x => x.<#= Model.Id.Name #>, idMap =>
+            {
+                idMap.Generator(<#= Model.Id.Generator #>);
+                idMap.Column("<#= Model.Id.ColumnName #>");
+                <# if (Model.Id.UnsavedValue != null) {#>
+                idMap.UnsavedValue(<#= Model.Id.UnsavedValue #>);
+                <# } #>
+            });
+
+            <# foreach (var ptp in Model.Properties) {#>
+            Property(x => x.<#= ptp.Name #>, clm => { 
+                clm.Column("<#= ptp.ColumnName #>"); 
+                <# if (ptp.NotNull) {#>
+                clm.NotNullable(true);
+                <#}#>
+                <# if (ptp.Unique) {#>
+                clm.Unique(true);
+                <#}#>
+                <# if(ptp.NoUpdate) {#>
+                clm.Update(false);
+                <#}#>
+                <# if(ptp.NoInsert) {#>
+                clm.Insert(false);
+                <#}#>
+                <# if(ptp.Length != null) {#>
+                clm.Length(<#=ptp.Length#>);
+                <#}#>
+            });
+            <# } #>
+            <# foreach (var mto in Model.ManyToOnes) {#>
+            ManyToOne(x => x.<#= mto.Name #>, mto => { 
+                mto.Column("<#= mto.ColumnName #>"); 
+                <# if(mto.NotFoundMode != null) {#>
+                mto.NotFound(<#=mto.NotFoundMode#>);
+                <#}#>
+                <# if(mto.NoUpdate) {#>
+                mto.Update(false);
+                <#}#>
+                <# if(mto.NoInsert) {#>
+                mto.Insert(false);
+                <#}#>
+                <# if (mto.Lazy != null) {#>
+                mto.Lazy(<#= mto.Lazy#>);
+                <#}#>
+                <# if (mto.NotNull) {#>
+                mto.NotNullable(true);
+                <#}#>
+                <# if (mto.Cascade != null) {#>
+                mto.Cascade(<#= mto.Cascade #>);
+                <#}#>
+            });
+
+            <# } #>
+            <# foreach (var bag in Model.Bags) {#>
+            Bag(x => x.<#= bag.Name #>, bag => { 
+                bag.Table("<#= bag.Table #>"); 
+                <# if (bag.Lazy) {#>
+                bag.Lazy(CollectionLazy.Lazy);
+                <#} else {#>
+                bag.Lazy(CollectionLazy.NoLazy);
+                <#}#>
+                <# if (bag.Inverse) {#>
+                bag.Inverse(true);
+                <#}#>
+                <# if (bag.Cascade != null) {#>
+                bag.Cascade(<#= bag.Cascade #>);
+                <#}#>
+                <# if(bag.KeyColumn != null) {#>
+                bag.Key(k => k.Column("<#=bag.KeyColumn#>"));
+                <#}#>
+                <# if(bag.OrderBy != null) {#>
+                bag.OrderBy("<#=bag.OrderBy#>");
+                <#}#>
+            }, rel => {
+                    rel.<#=bag.RelType#>();
+                    <# if (bag.RelColumn != null) {#>
+                    rel.Column("<#=bag.RelColumn#>");
+                    <#}#>
+            });
+        <# } #>
+        }
+    }
+}
