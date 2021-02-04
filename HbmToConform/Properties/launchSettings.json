@@ -1,8 +1,7 @@
 {
   "profiles": {
     "HbmToConform": {
-      "commandName": "Project",
-      "commandLineArgs": "\"C:\\Projects\\meridianbcms\\c2.risks\\Models\\Mapping\""
+      "commandName": "Project"
     }
   }
 }

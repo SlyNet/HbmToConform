@@ -1,76 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using NHibernate.Linq.ReWriters;
-using NHibernate.Mapping.ByCode;
 
 namespace HbmToConform
 {
-    class MappingModel
-    {
-        public MappingModel()
-        {
-            this.Properties = new List<Property>();
-            this.Bags = new List<BagInfo>();
-            this.ManyToOnes = new List<ManyToOneInfo>();
-        }
-
-        public List<ManyToOneInfo> ManyToOnes { get; set; }
-
-        public string DomainClassName { get; set; }
-
-        public string ClassTable { get; set; }
-
-        public bool Lazy { get; set; }
-
-        public List<Property> Properties { get; set; }
-
-        public List<BagInfo> Bags { get; set; }
-
-        public IdInfo Id { get; set; }
-        public string FullType { get; set; }
-    }
-
-    internal class IdInfo : ColumnInfo
-    {
-        public string Generator { get; set; }
-        public string UnsavedValue { get; set; }
-    }
-
-    internal class BagInfo : Named
-    {
-        public bool Inverse { get; set; }
-
-        public string Table { get; set; }
-        public bool Lazy { get; set; }
-        public string Cascade { get; set; }
-        public string KeyColumn { get; set; }
-        public string RelType { get; set; }
-        public string OrderBy { get; set; }
-        public string RelColumn { get; set; }
-    }
-
-    internal class Property : ColumnInfo
-    {
-        public bool NotNull { get; set; }
-        public bool Unique { get; set; }
-        public bool NoUpdate { get; set; }
-        public bool NoInsert { get; set; }
-        public int? Length { get; set; }
-    }
-
-    internal class ColumnInfo : Named
-    {
-        public string ColumnName { get; set; }
-    }
-
-    internal class Named
-    {
-        public string Name { get; set; }
-    }
-
     class Program
     {
         static void Main(string[] args)
@@ -96,31 +30,7 @@ namespace HbmToConform
                 if (bool.TryParse(classElement.Attribute("lazy")?.Value, out bool lazy))
                     model.Lazy = lazy;
 
-                var idElement = classElement.Element(ns.GetName("id"));
-                var idInfo = new IdInfo();
-                idInfo.ColumnName = idElement.Attribute("column").Value;
-                idInfo.Name = idElement.Attribute("name").Value;
-
-                var stringGenerator = idElement.Element(ns.GetName("generator")).Attribute("class").Value;
-                switch (stringGenerator)
-                {
-                    case "guid.comb":
-                        idInfo.Generator = "Generators.GuidComb";
-                        break;
-                    case "assigned":
-                        idInfo.Generator = "Generators.Assigned";
-                        break;
-                    case "identity":
-                        idInfo.Generator = "Generators.Identity";
-                        break;
-                    case "native":
-                        idInfo.Generator = "Generators.Native";
-                        break;
-                }
-
-                idInfo.UnsavedValue = idElement.Attribute("unsaved-value")?.Value;
-                model.Id = idInfo;
-
+                ReadId(classElement, ns, model);
                 ReadProperties(xml, ns, model);
                 ReadBagsMaps(xml, ns, classElement, model);
                 ReadManyToOnes(classElement, ns, model);
@@ -132,6 +42,34 @@ namespace HbmToConform
 
                 File.WriteAllText(Path.Combine(directory.FullName, onlyClass + "Map.cs"), map);
             }
+        }
+
+        private static void ReadId(XElement classElement, XNamespace ns, MappingModel model)
+        {
+            var idElement = classElement.Element(ns.GetName("id"));
+            var idInfo = new IdInfo();
+            idInfo.ColumnName = idElement.Attribute("column").Value;
+            idInfo.Name = idElement.Attribute("name").Value;
+
+            var stringGenerator = idElement.Element(ns.GetName("generator")).Attribute("class").Value;
+            switch (stringGenerator)
+            {
+                case "guid.comb":
+                    idInfo.Generator = "Generators.GuidComb";
+                    break;
+                case "assigned":
+                    idInfo.Generator = "Generators.Assigned";
+                    break;
+                case "identity":
+                    idInfo.Generator = "Generators.Identity";
+                    break;
+                case "native":
+                    idInfo.Generator = "Generators.Native";
+                    break;
+            }
+
+            idInfo.UnsavedValue = idElement.Attribute("unsaved-value")?.Value;
+            model.Id = idInfo;
         }
 
         private static void ReadManyToOnes(XElement classElement, XNamespace ns, MappingModel model)
@@ -283,15 +221,5 @@ namespace HbmToConform
                 model.Bags.Add(bagModel);
             }
         }
-    }
-
-    internal class ManyToOneInfo : ColumnInfo
-    {
-        public string NotFoundMode { get; set; }
-        public string Lazy { get; set; }
-        public bool NoUpdate { get; set; }
-        public bool NoInsert { get; set; }
-        public bool NotNull { get; set; }
-        public string Cascade { get; set; }
     }
 }
