@@ -27,7 +27,9 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
 
             <# foreach (var ptp in Model.Properties) {#>
             Property(x => x.<#= ptp.Name #>, clm => { 
-                clm.Column("<#= ptp.ColumnName #>"); 
+                <# if (ptp.ColumnName != null) { #>
+                clm.Column("<#= ptp.ColumnName #>");
+                <#}#>
                 <# if (ptp.NotNull) {#>
                 clm.NotNullable(true);
                 <#}#>
