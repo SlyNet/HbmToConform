@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -32,7 +33,8 @@ namespace HbmToConform
 
                 ReadId(classElement, ns, model);
                 ReadProperties(xml, ns, model);
-                ReadBagsMaps(xml, ns, classElement, model);
+                ReadBagsMaps(xml, ns, model);
+                ReadSetMaps(xml, ns, model);
                 ReadManyToOnes(classElement, ns, model);
 
                 var conversion = new MapTemplate();
@@ -42,6 +44,22 @@ namespace HbmToConform
 
                 File.WriteAllText(Path.Combine(directory.FullName, onlyClass + "Map.cs"), map);
             }
+        }
+
+        private static void ReadSetMaps(XDocument xml, XNamespace ns, MappingModel model)
+        {
+            CollectionType collectionType = CollectionType.Set;
+
+            List<CollectionInfo> foundCollections = ReadCollections(xml, ns, collectionType);
+            model.Collections.AddRange(foundCollections);
+        }
+
+        private static void ReadBagsMaps(XDocument xml, XNamespace ns, MappingModel model)
+        {
+            CollectionType collectionType = CollectionType.Bag;
+
+            List<CollectionInfo> foundCollections = ReadCollections(xml, ns, collectionType);
+            model.Collections.AddRange(foundCollections);
         }
 
         private static void ReadId(XElement classElement, XNamespace ns, MappingModel model)
@@ -66,6 +84,20 @@ namespace HbmToConform
                 case "native":
                     idInfo.Generator = "Generators.Native";
                     break;
+            }
+
+            if (idElement.Attribute("access")?.Value != null)
+            {
+                var xmlAccess = idElement.Attribute("access").Value;
+                switch (xmlAccess.ToLower())
+                {
+                    case "property":
+                        idInfo.Access = "Accessor.Property";
+                        break;
+                    case "field.camelcase-underscore":
+                        idInfo.Access = "Accessor.Field";
+                        break;
+                }
             }
 
             idInfo.UnsavedValue = idElement.Attribute("unsaved-value")?.Value;
@@ -163,29 +195,49 @@ namespace HbmToConform
                 {
                     propertyModel.Length = length;
                 }
-                
+
+                if (propertyNode.Attribute("generated")?.Value != null)
+                {
+                    propertyModel.Generated = propertyNode.Attribute("generated").Value;
+                }
+
+                if (propertyNode.Attribute("access")?.Value != null)
+                {
+                    var xmlAccess = propertyNode.Attribute("access").Value;
+                    switch (xmlAccess.ToLower())
+                    {
+                        case "property":
+                            propertyModel.Access = "Accessor.Property";
+                            break;
+                        case "field.camelcase-underscore":
+                            propertyModel.Access = "Accessor.Field";
+                            break;
+                    }
+                }
+
 
                 model.Properties.Add(propertyModel);
             }
         }
 
-        private static void ReadBagsMaps(XDocument xml, XNamespace ns, XElement classElement, MappingModel model)
+        private static List<CollectionInfo> ReadCollections(XDocument xml, XNamespace ns, CollectionType collectionType)
         {
-            foreach (var bagNode in xml.Root.Descendants(ns.GetName("bag")))
+            List<CollectionInfo> foundCollections = new List<CollectionInfo>();
+            foreach (var collectionNode in xml.Root.Descendants(ns.GetName(collectionType.ToString().ToLower())))
             {
-                var bagModel = new BagInfo();
-                bagModel.Name = bagNode.Attribute("name")?.Value;
+                var bagModel = new CollectionInfo();
+                bagModel.Name = collectionNode.Attribute("name")?.Value;
 
-                if (bool.TryParse(bagNode.Attribute("inverse")?.Value, out bool inverse))
+                if (bool.TryParse(collectionNode.Attribute("inverse")?.Value, out bool inverse))
                 {
                     bagModel.Inverse = inverse;
                 }
 
-                bagModel.Table = bagNode.Attribute("table")?.Value;
-                if (bool.TryParse(bagNode.Attribute("lazy")?.Value, out bool bagLazy))
+                bagModel.Table = collectionNode.Attribute("table")?.Value;
+                if (bool.TryParse(collectionNode.Attribute("lazy")?.Value, out bool bagLazy))
                     bagModel.Lazy = bagLazy;
 
-                string cascade = bagNode.Attribute("cascade")?.Value;
+                string cascade = collectionNode.Attribute("cascade")?.Value;
                 if (cascade != null)
                 {
                     switch (cascade)
@@ -205,21 +257,24 @@ namespace HbmToConform
                     }
                 }
 
-                bagModel.OrderBy = bagNode.Attribute("order-by")?.Value;
-                bagModel.KeyColumn = bagNode.Element(ns.GetName("key")).Attribute("column").Value;
+                bagModel.OrderBy = collectionNode.Attribute("order-by")?.Value;
+                bagModel.KeyColumn = collectionNode.Element(ns.GetName("key")).Attribute("column").Value;
 
-                if (bagNode.Element(ns.GetName("one-to-many")) != null)
+                if (collectionNode.Element(ns.GetName("one-to-many")) != null)
                 {
                     bagModel.RelType = "OneToMany";
                 }
-                if (bagNode.Element(ns.GetName("many-to-many")) != null)
+
+                if (collectionNode.Element(ns.GetName("many-to-many")) != null)
                 {
                     bagModel.RelType = "ManyToMany";
-                    bagModel.RelColumn = bagNode.Element(ns.GetName("many-to-many")).Attribute("column").Value;
+                    bagModel.RelColumn = collectionNode.Element(ns.GetName("many-to-many")).Attribute("column").Value;
                 }
 
-                model.Bags.Add(bagModel);
+                foundCollections.Add(bagModel);
             }
+
+            return foundCollections;
         }
     }
 }

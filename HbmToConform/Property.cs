@@ -7,5 +7,7 @@
         public bool NoUpdate { get; set; }
         public bool NoInsert { get; set; }
         public int? Length { get; set; }
+        public string Generated { get; set; }
+        public string Access { get; set; }
     }
 }

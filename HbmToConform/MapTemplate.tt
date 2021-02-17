@@ -23,6 +23,9 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
                 <# if (Model.Id.UnsavedValue != null) {#>
                 idMap.UnsavedValue(<#= Model.Id.UnsavedValue #>);
                 <# } #>
+                <# if(Model.Id.Access != null) {#>
+                idMap.Access(<#=Model.Id.Access #>);
+                <#}#>
             });
 
             <# foreach (var ptp in Model.Properties) {#>
@@ -44,6 +47,17 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
                 <#}#>
                 <# if(ptp.Length != null) {#>
                 clm.Length(<#=ptp.Length#>);
+                <#}#>
+                <# if(ptp.Access != null) {#>
+                clm.Access(<#=ptp.Access #>);
+                <#}#>
+
+                <# if(ptp.Generated != null) {#>
+                    <# if (ptp.Generated.Equals("insert", StringComparison.OrdinalIgnoreCase)) {#>
+                clm.Generated(PropertyGeneration.Insert);
+                    <# } else {#>
+                clm.Generated(PropertyGeneration.Update);
+                    <#}#>
                 <#}#>
             });
             <# } #>
@@ -71,8 +85,8 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
             });
 
             <# } #>
-            <# foreach (var bag in Model.Bags) {#>
-            Bag(x => x.<#= bag.Name #>, bag => { 
+            <# foreach (var bag in Model.Collections) {#>
+            <#= bag.CollectionType.ToString() #>(x => x.<#= bag.Name #>, bag => { 
                 bag.Table("<#= bag.Table #>"); 
                 <# if (bag.Lazy) {#>
                 bag.Lazy(CollectionLazy.Lazy);

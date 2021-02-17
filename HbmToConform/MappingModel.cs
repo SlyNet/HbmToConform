@@ -7,7 +7,7 @@ namespace HbmToConform
         public MappingModel()
         {
             this.Properties = new List<Property>();
-            this.Bags = new List<BagInfo>();
+            this.Collections = new List<CollectionInfo>();
             this.ManyToOnes = new List<ManyToOneInfo>();
         }
 
@@ -21,7 +21,7 @@ namespace HbmToConform
 
         public List<Property> Properties { get; set; }
 
-        public List<BagInfo> Bags { get; set; }
+        public List<CollectionInfo> Collections { get; set; }
 
         public IdInfo Id { get; set; }
         public string FullType { get; set; }

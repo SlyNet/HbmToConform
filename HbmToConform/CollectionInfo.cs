@@ -1,6 +1,6 @@
 ﻿namespace HbmToConform
 {
-    internal class BagInfo : Named
+    internal class CollectionInfo : Named
     {
         public bool Inverse { get; set; }
 
@@ -11,5 +11,13 @@
         public string RelType { get; set; }
         public string OrderBy { get; set; }
         public string RelColumn { get; set; }
+
+        public CollectionType CollectionType { get; set; }
+    }
+
+    internal enum CollectionType
+    {
+        Bag,
+        Set
     }
 }
