@@ -143,7 +143,12 @@ namespace HbmToConform
             {
                 var mtoModel = new ManyToOneInfo();
                 mtoModel.Name = manyToOne.Attribute("name").Value;
-                mtoModel.ColumnName = manyToOne.Attribute("column").Value;
+                mtoModel.ColumnName = manyToOne.Attribute("column")?.Value;
+
+                if (mtoModel.ColumnName == null)
+                {
+                   mtoModel.ColumnName =  manyToOne.Descendants(ns.GetName("column")).FirstOrDefault()?.Attribute("name")?.Value;
+                }
 
                 string notFoundModel = manyToOne.Attribute("not-found")?.Value;
                 switch (notFoundModel)
