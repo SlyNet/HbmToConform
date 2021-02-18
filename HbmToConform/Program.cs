@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using NHibernate.Mapping;
 
 namespace HbmToConform
 {
@@ -11,44 +10,57 @@ namespace HbmToConform
     {
         static void Main(string[] args)
         {
-            var directory = new DirectoryInfo(args[0]);
-
-            foreach (var fileInfo in directory.GetFiles("*.hbm.xml"))
+            if (File.Exists(args[0]))
             {
-                var xml = XDocument.Parse(File.ReadAllText(fileInfo.FullName));
-
-                var model = new MappingModel();
-                var ns = xml.Root.Name.Namespace;
-
-                var classElement = xml.Root.Element(ns.GetName("class"));
-
-                var fullClassName = classElement.Attribute("name").Value.Split(",")[0];
-                var onlyClass = fullClassName.Split(".", StringSplitOptions.RemoveEmptyEntries).Last();
-
-                model.DomainClassName = onlyClass;
-                model.FullType = fullClassName;
-                model.ClassTable = classElement.Attribute("table")!.Value;
-
-                if (bool.TryParse(classElement.Attribute("lazy")?.Value, out bool lazy))
-                    model.Lazy = lazy;
-
-                ReadId(classElement, ns, model);
-                ReadDiscriminator(classElement, ns, model);
-                ReadProperties(xml, ns, model);
-                ReadBagsMaps(xml, ns, model);
-                ReadSetMaps(xml, ns, model);
-                ReadManyToOnes(classElement, ns, model);
-                ReadSubClasses(classElement, ns, model);
-
-                var conversion = new MapTemplate();
-                conversion.Model = model;
-
-                Console.WriteLine($"Transforming file {Path.GetFileName(fileInfo.Name)}");
-
-                var map = conversion.TransformText();
-
-                File.WriteAllText(Path.Combine(directory.FullName, onlyClass + "Map.cs"), map);
+                ProcessSingleFile(new FileInfo(args[0]));
             }
+            else
+            {
+                var directory = new DirectoryInfo(args[0]);
+                foreach (var fileInfo in directory.GetFiles("*.hbm.xml"))
+                {
+                    ProcessSingleFile(fileInfo);
+                }
+            }
+        }
+
+        private static void ProcessSingleFile(FileInfo fileInfo)
+        {
+            var xml = XDocument.Parse(File.ReadAllText(fileInfo.FullName));
+
+            var model = new MappingModel();
+            var ns = xml.Root.Name.Namespace;
+
+            var classElement = xml.Root.Element(ns.GetName("class"));
+
+            var fullClassName = classElement.Attribute("name").Value.Split(",")[0];
+            var onlyClass = fullClassName.Split(".", StringSplitOptions.RemoveEmptyEntries).Last();
+
+            model.DomainClassName = onlyClass;
+            model.FullType = fullClassName;
+            model.ClassTable = classElement.Attribute("table")!.Value;
+
+            if (bool.TryParse(classElement.Attribute("lazy")?.Value, out bool lazy))
+                model.Lazy = lazy;
+
+            ReadId(classElement, ns, model);
+            ReadDiscriminator(classElement, ns, model);
+
+            var properties = ReadProperties(xml.Root.Descendants(ns.GetName("class")).FirstOrDefault(), ns);
+            model.Properties.AddRange(properties);
+            ReadBagsMaps(xml, ns, model);
+            ReadSetMaps(xml, ns, model);
+            model.ManyToOnes.AddRange(ReadManyToOnes(xml.Root.Descendants(ns.GetName("class")).FirstOrDefault(), ns, model));
+            ReadSubClasses(classElement, ns, model);
+
+            var conversion = new MapTemplate();
+            conversion.Model = model;
+
+            Console.WriteLine($"Transforming file {Path.GetFileName(fileInfo.Name)}");
+
+            var map = conversion.TransformText();
+
+            File.WriteAllText(Path.Combine(Path.GetDirectoryName(fileInfo.FullName), onlyClass + "Map.cs"), map);
         }
 
         private static void ReadSubClasses(XElement classElement, XNamespace ns, MappingModel model)
@@ -83,7 +95,7 @@ namespace HbmToConform
         {
             CollectionType collectionType = CollectionType.Set;
 
-            List<CollectionInfo> foundCollections = ReadCollections(xml, ns, collectionType);
+            List<CollectionInfo> foundCollections = ReadCollections(xml.Root.Descendants(ns.GetName("class")).FirstOrDefault(), ns, collectionType);
             model.Collections.AddRange(foundCollections);
         }
 
@@ -91,7 +103,7 @@ namespace HbmToConform
         {
             CollectionType collectionType = CollectionType.Bag;
 
-            List<CollectionInfo> foundCollections = ReadCollections(xml, ns, collectionType);
+            List<CollectionInfo> foundCollections = ReadCollections(xml.Root.Descendants(ns.GetName("class")).FirstOrDefault(), ns, collectionType);
             model.Collections.AddRange(foundCollections);
         }
 
@@ -134,12 +146,16 @@ namespace HbmToConform
             }
 
             idInfo.UnsavedValue = idElement.Attribute("unsaved-value")?.Value;
+            if (idInfo.UnsavedValue == Guid.Empty.ToString())
+            {
+                idInfo.UnsavedValue = "System.Guid.Empty";
+            }
             model.Id = idInfo;
         }
 
-        private static void ReadManyToOnes(XElement classElement, XNamespace ns, MappingModel model)
+        private static IEnumerable<ManyToOneInfo> ReadManyToOnes(XElement classElement, XNamespace ns, MappingModel model)
         {
-            foreach (var manyToOne in classElement.Descendants(ns.GetName("many-to-one")))
+            foreach (var manyToOne in classElement.Elements(ns.GetName("many-to-one")))
             {
                 var mtoModel = new ManyToOneInfo();
                 mtoModel.Name = manyToOne.Attribute("name").Value;
@@ -198,13 +214,13 @@ namespace HbmToConform
                 mtoModel.NotNull = manyToOne.Attribute("not-null")?.Value == "true";
                 mtoModel.Unique = manyToOne.Attribute("unique")?.Value;
 
-                model.ManyToOnes.Add(mtoModel);
+                yield return mtoModel;
             }
         }
 
-        private static void ReadProperties(XDocument xml, XNamespace ns, MappingModel model)
+        private static IEnumerable<Property> ReadProperties(XElement root, XNamespace ns)
         {
-            foreach (var propertyNode in xml.Root.Descendants(ns.GetName("property")))
+            foreach (var propertyNode in root.Elements(ns.GetName("property")))
             {
                 var propertyModel = new Property();
 
@@ -260,15 +276,20 @@ namespace HbmToConform
                     }
                 }
 
+                propertyModel.SqlType = propertyNode.Attribute("sql-type")?.Value;
+                if (propertyModel.SqlType == null)
+                {
+                    propertyModel.SqlType = propertyNode.Descendants(ns.GetName("column")).FirstOrDefault()?.Attribute("sql-type")?.Value;
+                }
 
-                model.Properties.Add(propertyModel);
+                yield return propertyModel;
             }
         }
 
-        private static List<CollectionInfo> ReadCollections(XDocument xml, XNamespace ns, CollectionType collectionType)
+        private static List<CollectionInfo> ReadCollections(XElement xml, XNamespace ns, CollectionType collectionType)
         {
             List<CollectionInfo> foundCollections = new List<CollectionInfo>();
-            foreach (var collectionNode in xml.Root.Descendants(ns.GetName(collectionType.ToString().ToLower())))
+            foreach (var collectionNode in xml.Elements(ns.GetName(collectionType.ToString().ToLower())))
             {
                 var bagModel = new CollectionInfo();
                 bagModel.Name = collectionNode.Attribute("name")?.Value;
@@ -316,12 +337,34 @@ namespace HbmToConform
                     bagModel.RelColumn = collectionNode.Element(ns.GetName("many-to-many")).Attribute("column").Value;
                 }
 
+                var compositeElement = collectionNode.Element(ns.GetName("composite-element"));
+                if (compositeElement != null)
+                {
+                    var compositeElementModel = new CompositeElementModel();
+                    compositeElementModel.Parent = compositeElement.Element(ns.GetName("parent"))?.Attribute("name")?.Value;
+                    var childProperties = ReadProperties(compositeElement, ns);
+                    compositeElementModel.Properties.AddRange(childProperties);
 
+                    bagModel.CompositeElement = compositeElementModel;
+                }
+
+                bagModel.CollectionType = collectionType;
                 foundCollections.Add(bagModel);
             }
 
             return foundCollections;
         }
+    }
+
+    internal class CompositeElementModel 
+    {
+        public CompositeElementModel()
+        {
+            this.Properties = new List<Property>();
+        }
+
+        public string Parent { get; set; }
+        public List<Property> Properties { get; set; }
     }
 
     internal class SubclassModel

@@ -34,10 +34,16 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
 
             <# foreach (var ptp in Model.Properties) {#>
             Property(x => x.<#= ptp.Name #>, clm => { 
-                <# if (ptp.ColumnName != null) { #>
-                clm.Column("<#= ptp.ColumnName #>");
-                <#}#>
-                <# if (ptp.NotNull) {#>
+<# if (ptp.ColumnName != null) { #>
+                clm.Column(c =>
+                {
+                    c.Name("<#= ptp.ColumnName #>");
+<# if (ptp.SqlType != null) { #>
+                    c.SqlType("<#= ptp.SqlType #>");
+<#}#>
+                });
+<#}#>
+<# if (ptp.NotNull) {#>
                 clm.NotNullable(true);
                 <#}#>
                 <# if (ptp.Unique) {#>
@@ -119,10 +125,27 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
                 bag.OrderBy("<#=bag.OrderBy#>");
                 <#}#>
             }, rel => {
+                    <# if (bag.RelType != null) {#>
                     rel.<#=bag.RelType#>();
+                    <#}#>
                     <# if (bag.RelColumn != null) {#>
                         mtm.Column("<#=bag.RelColumn#>");
                     <#}#>
+
+<# if (bag.CompositeElement != null) {#>
+               rel.Component(cmp =>
+                    {
+<#}#>
+<# if (bag.CompositeElement?.Parent != null) {#>
+                    cmp.Parent(x => x.<#= bag.CompositeElement.Parent #>);
+<#}#>
+<# foreach (var childProperty in bag.CompositeElement?.Properties ?? new List<Property>()) {#>
+                        cmp.Property(x => x.<#=childProperty.Name#>, ptp => ptp.Column("<#= childProperty.ColumnName #>"));
+<#}#>
+<# if (bag.CompositeElement != null) {#>
+                    });
+<#}#>
+
             });
         <# } #>
         }

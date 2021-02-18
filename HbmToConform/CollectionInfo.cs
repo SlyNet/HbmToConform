@@ -1,4 +1,6 @@
-﻿namespace HbmToConform
+﻿using System.Xml.Linq;
+
+namespace HbmToConform
 {
     internal class CollectionInfo : Named
     {
@@ -13,6 +15,7 @@
         public string RelColumn { get; set; }
 
         public CollectionType CollectionType { get; set; }
+        public CompositeElementModel CompositeElement { get; set; }
     }
 
     internal enum CollectionType

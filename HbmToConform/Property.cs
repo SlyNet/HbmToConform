@@ -10,5 +10,7 @@
         public string Generated { get; set; }
         public string Access { get; set; }
         public string UniqueKey { get; set; }
+
+        public string SqlType { get; set; }
     }
 }
