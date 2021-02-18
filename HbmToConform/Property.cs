@@ -9,5 +9,6 @@
         public int? Length { get; set; }
         public string Generated { get; set; }
         public string Access { get; set; }
+        public string UniqueKey { get; set; }
     }
 }

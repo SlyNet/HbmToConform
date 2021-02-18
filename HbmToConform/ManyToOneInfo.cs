@@ -8,5 +8,6 @@
         public bool NoInsert { get; set; }
         public bool NotNull { get; set; }
         public string Cascade { get; set; }
+        public string Unique { get; set; }
     }
 }

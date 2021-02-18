@@ -28,6 +28,10 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
                 <#}#>
             });
 
+            <# if (Model.Discriminator != null) {#>
+                Discriminator(d => d.Column("<#= Model.Discriminator.ColumnName #>"));
+            <# } #>
+
             <# foreach (var ptp in Model.Properties) {#>
             Property(x => x.<#= ptp.Name #>, clm => { 
                 <# if (ptp.ColumnName != null) { #>
@@ -59,6 +63,10 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
                 clm.Generated(PropertyGeneration.Update);
                     <#}#>
                 <#}#>
+
+                <# if (ptp.UniqueKey != null) {#>
+                ptp.UniqueKey("<#= ptp.UniqueKey #>");
+                <#}#>
             });
             <# } #>
             <# foreach (var mto in Model.ManyToOnes) {#>
@@ -82,12 +90,17 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
                 <# if (mto.Cascade != null) {#>
                 mto.Cascade(<#= mto.Cascade #>);
                 <#}#>
+                <# if (mto.Unique != null) {#>
+                mto.Unique(<#= mto.Unique #>);
+                <#}#>
             });
 
             <# } #>
             <# foreach (var bag in Model.Collections) {#>
             <#= bag.CollectionType.ToString() #>(x => x.<#= bag.Name #>, bag => { 
+                <# if (bag.Table != null) {#>
                 bag.Table("<#= bag.Table #>"); 
+                <# } #>
                 <# if (bag.Lazy) {#>
                 bag.Lazy(CollectionLazy.Lazy);
                 <#} else {#>
@@ -108,10 +121,23 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
             }, rel => {
                     rel.<#=bag.RelType#>();
                     <# if (bag.RelColumn != null) {#>
-                    rel.Column("<#=bag.RelColumn#>");
+                        mtm.Column("<#=bag.RelColumn#>");
                     <#}#>
             });
         <# } #>
         }
     }
+
+    <# foreach (var subclass in Model.Subclasses) {#>
+    [Localizable(false)]
+    public class <#=subclass.ClassName#>Map : SubclassMapping<<#= subclass.FullClassName #>> 
+    {
+        public <#=subclass.ClassName#>Map()
+        {
+            <#if(subclass.DiscriminatorValue != null){#>
+            DiscriminatorValue(<#= subclass.DiscriminatorValue #>);
+            <#}#>
+        }
+    }
+    <#}#>
 }

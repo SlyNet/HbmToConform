@@ -9,6 +9,7 @@ namespace HbmToConform
             this.Properties = new List<Property>();
             this.Collections = new List<CollectionInfo>();
             this.ManyToOnes = new List<ManyToOneInfo>();
+            this.Subclasses = new List<SubclassModel>();
         }
 
         public List<ManyToOneInfo> ManyToOnes { get; set; }
@@ -25,5 +26,7 @@ namespace HbmToConform
 
         public IdInfo Id { get; set; }
         public string FullType { get; set; }
+        public DiscriminatorModel Discriminator { get; set; }
+        public List<SubclassModel> Subclasses { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using NHibernate.Mapping;
 
 namespace HbmToConform
 {
@@ -32,17 +33,49 @@ namespace HbmToConform
                     model.Lazy = lazy;
 
                 ReadId(classElement, ns, model);
+                ReadDiscriminator(classElement, ns, model);
                 ReadProperties(xml, ns, model);
                 ReadBagsMaps(xml, ns, model);
                 ReadSetMaps(xml, ns, model);
                 ReadManyToOnes(classElement, ns, model);
+                ReadSubClasses(classElement, ns, model);
 
                 var conversion = new MapTemplate();
                 conversion.Model = model;
 
+                Console.WriteLine($"Transforming file {Path.GetFileName(fileInfo.Name)}");
+
                 var map = conversion.TransformText();
 
                 File.WriteAllText(Path.Combine(directory.FullName, onlyClass + "Map.cs"), map);
+            }
+        }
+
+        private static void ReadSubClasses(XElement classElement, XNamespace ns, MappingModel model)
+        {
+            foreach (XElement subclassNode in classElement.Descendants(ns.GetName("subclass")))
+            {
+                //<subclass name="ncontinuity2.core.domain.SupplierInterimMeasures,ncontinuity2.core" discriminator-value="1" />
+                var subclassModel = new SubclassModel();
+                var fullClassName = subclassNode.Attribute("name").Value.Split(",")[0];
+                var onlyClass = fullClassName.Split(".", StringSplitOptions.RemoveEmptyEntries).Last();
+
+                subclassModel.ClassName = onlyClass;
+                subclassModel.FullClassName = fullClassName;
+                subclassModel.DiscriminatorValue = subclassNode.Attribute("discriminator-value")?.Value;
+                model.Subclasses.Add(subclassModel);
+            }
+        }
+
+        private static void ReadDiscriminator(XElement classElement, XNamespace ns, MappingModel model)
+        {
+            var discriminator = classElement.Descendants(ns.GetName("discriminator")).FirstOrDefault();
+            if (discriminator != null)
+            {
+                var discriminatorModel = new DiscriminatorModel();
+                discriminatorModel.ColumnName = discriminator.Attribute("column")?.Value;
+
+                model.Discriminator = discriminatorModel;
             }
         }
 
@@ -130,6 +163,9 @@ namespace HbmToConform
                     case "proxy":
                         mtoModel.Lazy = "LazyRelation.Proxy";
                         break;
+                    case "no-proxy":
+                        mtoModel.Lazy = "LazyRelation.NoProxy";
+                        break;
                 }
 
                 string cascade = manyToOne.Attribute("cascade")?.Value;
@@ -155,6 +191,7 @@ namespace HbmToConform
                 mtoModel.NoUpdate = manyToOne.Attribute("update")?.Value == "false";
                 mtoModel.NoInsert = manyToOne.Attribute("insert")?.Value == "false";
                 mtoModel.NotNull = manyToOne.Attribute("not-null")?.Value == "true";
+                mtoModel.Unique = manyToOne.Attribute("unique")?.Value;
 
                 model.ManyToOnes.Add(mtoModel);
             }
@@ -196,6 +233,9 @@ namespace HbmToConform
                     propertyModel.Length = length;
                 }
 
+
+                propertyModel.UniqueKey = propertyNode.Attribute("unique-key")?.Value;
+                
                 if (propertyNode.Attribute("generated")?.Value != null)
                 {
                     propertyModel.Generated = propertyNode.Attribute("generated").Value;
@@ -271,10 +311,19 @@ namespace HbmToConform
                     bagModel.RelColumn = collectionNode.Element(ns.GetName("many-to-many")).Attribute("column").Value;
                 }
 
+
                 foundCollections.Add(bagModel);
             }
 
             return foundCollections;
         }
+    }
+
+    internal class SubclassModel
+    {
+        public string ClassName { get;set; }
+
+        public string DiscriminatorValue { get; set; }
+        public string FullClassName { get; set; }
     }
 }
