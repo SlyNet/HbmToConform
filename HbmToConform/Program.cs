@@ -19,6 +19,7 @@ namespace HbmToConform
                 var directory = new DirectoryInfo(args[0]);
                 foreach (var fileInfo in directory.GetFiles("*.hbm.xml"))
                 {
+                    if(fileInfo.Name != "bia.hbm.xml")
                     ProcessSingleFile(fileInfo);
                 }
             }
@@ -317,6 +318,9 @@ namespace HbmToConform
                         case "save-update":
                             bagModel.Cascade = "Cascade.Persist";
                             break;
+                        case "delete":
+                            bagModel.Cascade = "Cascade.Remove";
+                            break;
                         case "none":
                             bagModel.Cascade = "Cascade.None";
                             break;
@@ -331,10 +335,20 @@ namespace HbmToConform
                     bagModel.RelType = "OneToMany";
                 }
 
-                if (collectionNode.Element(ns.GetName("many-to-many")) != null)
+                var manyToManyRelation = collectionNode.Element(ns.GetName("many-to-many"));
+                if (manyToManyRelation != null)
                 {
                     bagModel.RelType = "ManyToMany";
-                    bagModel.RelColumn = collectionNode.Element(ns.GetName("many-to-many")).Attribute("column").Value;
+                    bagModel.RelColumn = manyToManyRelation.Attribute("column").Value;
+                    var notFound = manyToManyRelation.Attribute("not-found");
+                    switch (notFound?.Value)
+                    {
+                        case "ignore":
+                            bagModel.NotFound = "NotFoundMode.Ignore";
+                            break;
+                        case null:
+                            break;
+                    }
                 }
 
                 var compositeElement = collectionNode.Element(ns.GetName("composite-element"));
@@ -347,6 +361,8 @@ namespace HbmToConform
 
                     bagModel.CompositeElement = compositeElementModel;
                 }
+
+                
 
                 bagModel.CollectionType = collectionType;
                 foundCollections.Add(bagModel);

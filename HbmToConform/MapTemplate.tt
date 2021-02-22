@@ -65,13 +65,15 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
                 <# if(ptp.Generated != null) {#>
                     <# if (ptp.Generated.Equals("insert", StringComparison.OrdinalIgnoreCase)) {#>
                 clm.Generated(PropertyGeneration.Insert);
-                    <# } else {#>
+                    <# } else if (ptp.Generated.Equals("update", StringComparison.OrdinalIgnoreCase)) {#>
                 clm.Generated(PropertyGeneration.Update);
+                    <#} else if (ptp.Generated.Equals("always", StringComparison.OrdinalIgnoreCase)) {#>
+                clm.Generated(PropertyGeneration.Always);
                     <#}#>
                 <#}#>
 
                 <# if (ptp.UniqueKey != null) {#>
-                ptp.UniqueKey("<#= ptp.UniqueKey #>");
+                clm.UniqueKey("<#= ptp.UniqueKey #>");
                 <#}#>
             });
             <# } #>
@@ -126,12 +128,15 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
                 <#}#>
             }, rel => {
                     <# if (bag.RelType != null) {#>
-                    rel.<#=bag.RelType#>();
+                    rel.<#=bag.RelType#>(
                     <#}#>
                     <# if (bag.RelColumn != null) {#>
-                        mtm.Column("<#=bag.RelColumn#>");
+                        mtm => mtm.Column("<#=bag.RelColumn#>")
                     <#}#>
-
+                    <# if (bag.NotFound != null) {#>
+                        mtm => mtm.NotFound("<#=bag.NotFound#>")
+                    <#}#>
+                    );
 <# if (bag.CompositeElement != null) {#>
                rel.Component(cmp =>
                     {
