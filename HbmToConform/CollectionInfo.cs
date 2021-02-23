@@ -17,6 +17,7 @@ namespace HbmToConform
         public CollectionType CollectionType { get; set; }
         public CompositeElementModel CompositeElement { get; set; }
         public string NotFound { get; set; }
+        public string BatchSize { get; set; }
     }
 
     internal enum CollectionType

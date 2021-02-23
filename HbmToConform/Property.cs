@@ -12,5 +12,6 @@
         public string UniqueKey { get; set; }
 
         public string SqlType { get; set; }
+        public string Formula { get; set; }
     }
 }

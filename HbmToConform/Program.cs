@@ -17,7 +17,7 @@ namespace HbmToConform
             else
             {
                 var directory = new DirectoryInfo(args[0]);
-                foreach (var fileInfo in directory.GetFiles("*.hbm.xml"))
+                foreach (var fileInfo in directory.GetFiles("*.hbm.xml", SearchOption.AllDirectories))
                 {
                     if(fileInfo.Name != "bia.hbm.xml")
                     ProcessSingleFile(fileInfo);
@@ -40,6 +40,7 @@ namespace HbmToConform
             model.DomainClassName = onlyClass;
             model.FullType = fullClassName;
             model.ClassTable = classElement.Attribute("table")!.Value;
+            model.BatchSize = classElement.Attribute("batch-size")?.Value;
 
             if (bool.TryParse(classElement.Attribute("lazy")?.Value, out bool lazy))
                 model.Lazy = lazy;
@@ -112,10 +113,10 @@ namespace HbmToConform
         {
             var idElement = classElement.Element(ns.GetName("id"));
             var idInfo = new IdInfo();
-            idInfo.ColumnName = idElement.Attribute("column").Value;
+            idInfo.ColumnName = idElement.Attribute("column")?.Value;
             idInfo.Name = idElement.Attribute("name").Value;
 
-            var stringGenerator = idElement.Element(ns.GetName("generator")).Attribute("class").Value;
+            var stringGenerator = idElement.Element(ns.GetName("generator"))?.Attribute("class")?.Value;
             switch (stringGenerator)
             {
                 case "guid.comb":
@@ -156,7 +157,7 @@ namespace HbmToConform
 
         private static IEnumerable<ManyToOneInfo> ReadManyToOnes(XElement classElement, XNamespace ns, MappingModel model)
         {
-            foreach (var manyToOne in classElement.Elements(ns.GetName("many-to-one")))
+            foreach (var manyToOne in classElement.Descendants(ns.GetName("many-to-one")))
             {
                 var mtoModel = new ManyToOneInfo();
                 mtoModel.Name = manyToOne.Attribute("name").Value;
@@ -187,6 +188,9 @@ namespace HbmToConform
                         break;
                     case "no-proxy":
                         mtoModel.Lazy = "LazyRelation.NoProxy";
+                        break;
+                    case "false":
+                        mtoModel.Lazy = "LazyRelation.NoLazy";
                         break;
                 }
 
@@ -256,7 +260,10 @@ namespace HbmToConform
                 }
 
 
-                propertyModel.UniqueKey = propertyNode.Attribute("unique-key")?.Value;
+                propertyModel.UniqueKey = propertyNode.Attribute("unique-key")?.Value
+                    ?? propertyNode.Element(ns.GetName("column"))?.Attribute("unique-key")?.Value;;
+
+                propertyModel.Formula = propertyNode.Attribute("formula")?.Value;
                 
                 if (propertyNode.Attribute("generated")?.Value != null)
                 {
@@ -283,6 +290,7 @@ namespace HbmToConform
                     propertyModel.SqlType = propertyNode.Descendants(ns.GetName("column")).FirstOrDefault()?.Attribute("sql-type")?.Value;
                 }
 
+
                 yield return propertyModel;
             }
         }
@@ -290,7 +298,7 @@ namespace HbmToConform
         private static List<CollectionInfo> ReadCollections(XElement xml, XNamespace ns, CollectionType collectionType)
         {
             List<CollectionInfo> foundCollections = new List<CollectionInfo>();
-            foreach (var collectionNode in xml.Elements(ns.GetName(collectionType.ToString().ToLower())))
+            foreach (var collectionNode in xml.Descendants(ns.GetName(collectionType.ToString().ToLower())))
             {
                 var bagModel = new CollectionInfo();
                 bagModel.Name = collectionNode.Attribute("name")?.Value;
@@ -303,6 +311,8 @@ namespace HbmToConform
                 bagModel.Table = collectionNode.Attribute("table")?.Value;
                 if (bool.TryParse(collectionNode.Attribute("lazy")?.Value, out bool bagLazy))
                     bagModel.Lazy = bagLazy;
+
+                bagModel.BatchSize = collectionNode.Attribute("batch-size")?.Value;
 
                 string cascade = collectionNode.Attribute("cascade")?.Value;
                 if (cascade != null)
@@ -330,6 +340,7 @@ namespace HbmToConform
                 bagModel.OrderBy = collectionNode.Attribute("order-by")?.Value;
                 bagModel.KeyColumn = collectionNode.Element(ns.GetName("key")).Attribute("column").Value;
 
+
                 if (collectionNode.Element(ns.GetName("one-to-many")) != null)
                 {
                     bagModel.RelType = "OneToMany";
@@ -345,6 +356,9 @@ namespace HbmToConform
                     {
                         case "ignore":
                             bagModel.NotFound = "NotFoundMode.Ignore";
+                            break;
+                        case "exception":
+                            bagModel.NotFound = "NotFoundMode.Exception";
                             break;
                         case null:
                             break;

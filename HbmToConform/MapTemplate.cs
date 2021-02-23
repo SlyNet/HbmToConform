@@ -78,272 +78,299 @@ namespace HbmToConform
             
             #line default
             #line hidden
-            this.Write(", idMap =>\r\n            {\r\n                idMap.Generator(");
+            this.Write(", idMap =>\r\n            {\r\n");
             
             #line 21 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ if (Model.Id.Generator != null) {
+            
+            #line default
+            #line hidden
+            this.Write("                idMap.Generator(");
+            
+            #line 22 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Model.Id.Generator));
             
             #line default
             #line hidden
-            this.Write(");\r\n                idMap.Column(\"");
+            this.Write(");\r\n");
             
-            #line 22 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 23 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 24 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ if (Model.Id.ColumnName != null) {
+            
+            #line default
+            #line hidden
+            this.Write("                idMap.Column(\"");
+            
+            #line 25 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Model.Id.ColumnName));
             
             #line default
             #line hidden
-            this.Write("\");\r\n                ");
+            this.Write("\");\r\n");
             
-            #line 23 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 26 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("                ");
+            
+            #line 27 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (Model.Id.UnsavedValue != null) {
             
             #line default
             #line hidden
             this.Write("                idMap.UnsavedValue(");
             
-            #line 24 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 28 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Model.Id.UnsavedValue));
             
             #line default
             #line hidden
             this.Write(");\r\n                ");
             
-            #line 25 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 29 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 26 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 30 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if(Model.Id.Access != null) {
             
             #line default
             #line hidden
             this.Write("                idMap.Access(");
             
-            #line 27 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 31 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Model.Id.Access));
             
             #line default
             #line hidden
             this.Write(");\r\n                ");
             
-            #line 28 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 32 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
-            this.Write("            });\r\n\r\n            ");
+            this.Write("            });\r\n            ");
             
-            #line 31 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
- if (Model.Discriminator != null) {
-            
-            #line default
-            #line hidden
-            this.Write("                Discriminator(d => d.Column(\"");
-            
-            #line 32 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Model.Discriminator.ColumnName));
+            #line 34 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ if (Model.BatchSize != null) {
             
             #line default
             #line hidden
-            this.Write("\"));\r\n            ");
+            this.Write("             BatchSize(");
             
-            #line 33 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 35 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Model.BatchSize));
+            
+            #line default
+            #line hidden
+            this.Write(");\r\n            ");
+            
+            #line 36 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\r\n            ");
             
-            #line 35 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 38 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ if (Model.Discriminator != null) {
+            
+            #line default
+            #line hidden
+            this.Write("                Discriminator(d => d.Column(\"");
+            
+            #line 39 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Model.Discriminator.ColumnName));
+            
+            #line default
+            #line hidden
+            this.Write("\"));\r\n            ");
+            
+            #line 40 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("\r\n            ");
+            
+            #line 42 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  foreach (var ptp in Model.Properties) {
             
             #line default
             #line hidden
             this.Write("            Property(x => x.");
             
-            #line 36 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 43 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ptp.Name));
             
             #line default
             #line hidden
             this.Write(", clm => { \r\n");
             
-            #line 37 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 44 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (ptp.ColumnName != null) { 
             
             #line default
             #line hidden
             this.Write("                clm.Column(c =>\r\n                {\r\n                    c.Name(\"");
             
-            #line 40 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 47 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ptp.ColumnName));
             
             #line default
             #line hidden
             this.Write("\");\r\n");
             
-            #line 41 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 48 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (ptp.SqlType != null) { 
             
             #line default
             #line hidden
             this.Write("                    c.SqlType(\"");
             
-            #line 42 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 49 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ptp.SqlType));
             
             #line default
             #line hidden
             this.Write("\");\r\n");
             
-            #line 43 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 50 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                });\r\n");
             
-            #line 45 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 52 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             
-            #line 46 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 53 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (ptp.NotNull) {
             
             #line default
             #line hidden
             this.Write("                clm.NotNullable(true);\r\n                ");
             
-            #line 48 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 55 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 49 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 56 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (ptp.Unique) {
             
             #line default
             #line hidden
             this.Write("                clm.Unique(true);\r\n                ");
             
-            #line 51 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 58 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 52 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 59 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if(ptp.NoUpdate) {
             
             #line default
             #line hidden
             this.Write("                clm.Update(false);\r\n                ");
             
-            #line 54 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 61 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 55 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 62 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if(ptp.NoInsert) {
             
             #line default
             #line hidden
             this.Write("                clm.Insert(false);\r\n                ");
             
-            #line 57 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 64 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 58 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 65 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if(ptp.Length != null) {
             
             #line default
             #line hidden
             this.Write("                clm.Length(");
             
-            #line 59 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 66 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ptp.Length));
             
             #line default
             #line hidden
             this.Write(");\r\n                ");
             
-            #line 60 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 67 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 61 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 68 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ if(ptp.Formula != null) {
+            
+            #line default
+            #line hidden
+            this.Write("                clm.Formula(\"");
+            
+            #line 69 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(ptp.Formula));
+            
+            #line default
+            #line hidden
+            this.Write("\");\r\n                ");
+            
+            #line 70 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+}
+            
+            #line default
+            #line hidden
+            this.Write("                ");
+            
+            #line 71 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if(ptp.Access != null) {
             
             #line default
             #line hidden
             this.Write("                clm.Access(");
             
-            #line 62 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 72 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ptp.Access));
             
             #line default
             #line hidden
             this.Write(");\r\n                ");
-            
-            #line 63 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
-}
-            
-            #line default
-            #line hidden
-            this.Write("\r\n                ");
-            
-            #line 65 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
- if(ptp.Generated != null) {
-            
-            #line default
-            #line hidden
-            this.Write("                    ");
-            
-            #line 66 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
- if (ptp.Generated.Equals("insert", StringComparison.OrdinalIgnoreCase)) {
-            
-            #line default
-            #line hidden
-            this.Write("                clm.Generated(PropertyGeneration.Insert);\r\n                    ");
-            
-            #line 68 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
- } else if (ptp.Generated.Equals("update", StringComparison.OrdinalIgnoreCase)) {
-            
-            #line default
-            #line hidden
-            this.Write("                clm.Generated(PropertyGeneration.Update);\r\n                    ");
-            
-            #line 70 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
-} else if (ptp.Generated.Equals("always", StringComparison.OrdinalIgnoreCase)) {
-            
-            #line default
-            #line hidden
-            this.Write("                clm.Generated(PropertyGeneration.Always);\r\n                    ");
-            
-            #line 72 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
-}
-            
-            #line default
-            #line hidden
-            this.Write("                ");
             
             #line 73 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
@@ -353,521 +380,583 @@ namespace HbmToConform
             this.Write("\r\n                ");
             
             #line 75 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ if(ptp.Generated != null) {
+            
+            #line default
+            #line hidden
+            this.Write("                    ");
+            
+            #line 76 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ if (ptp.Generated.Equals("insert", StringComparison.OrdinalIgnoreCase)) {
+            
+            #line default
+            #line hidden
+            this.Write("                clm.Generated(PropertyGeneration.Insert);\r\n                    ");
+            
+            #line 78 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ } else if (ptp.Generated.Equals("update", StringComparison.OrdinalIgnoreCase)) {
+            
+            #line default
+            #line hidden
+            this.Write("                clm.Generated(PropertyGeneration.Update);\r\n                    ");
+            
+            #line 80 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+} else if (ptp.Generated.Equals("always", StringComparison.OrdinalIgnoreCase)) {
+            
+            #line default
+            #line hidden
+            this.Write("                clm.Generated(PropertyGeneration.Always);\r\n                    ");
+            
+            #line 82 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+}
+            
+            #line default
+            #line hidden
+            this.Write("                ");
+            
+            #line 83 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+}
+            
+            #line default
+            #line hidden
+            this.Write("\r\n                ");
+            
+            #line 85 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (ptp.UniqueKey != null) {
             
             #line default
             #line hidden
             this.Write("                clm.UniqueKey(\"");
             
-            #line 76 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 86 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ptp.UniqueKey));
             
             #line default
             #line hidden
             this.Write("\");\r\n                ");
             
-            #line 77 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 87 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("            });\r\n            ");
             
-            #line 79 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 89 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("            ");
             
-            #line 80 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 90 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  foreach (var mto in Model.ManyToOnes) {
             
             #line default
             #line hidden
             this.Write("            ManyToOne(x => x.");
             
-            #line 81 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 91 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(mto.Name));
             
             #line default
             #line hidden
             this.Write(", mto => { \r\n                mto.Column(\"");
             
-            #line 82 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 92 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(mto.ColumnName));
             
             #line default
             #line hidden
             this.Write("\"); \r\n                ");
             
-            #line 83 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 93 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if(mto.NotFoundMode != null) {
             
             #line default
             #line hidden
             this.Write("                mto.NotFound(");
             
-            #line 84 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 94 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(mto.NotFoundMode));
             
             #line default
             #line hidden
             this.Write(");\r\n                ");
             
-            #line 85 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 95 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 86 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 96 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if(mto.NoUpdate) {
             
             #line default
             #line hidden
             this.Write("                mto.Update(false);\r\n                ");
             
-            #line 88 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 98 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 89 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 99 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if(mto.NoInsert) {
             
             #line default
             #line hidden
             this.Write("                mto.Insert(false);\r\n                ");
             
-            #line 91 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 101 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 92 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 102 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (mto.Lazy != null) {
             
             #line default
             #line hidden
             this.Write("                mto.Lazy(");
             
-            #line 93 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 103 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(mto.Lazy));
             
             #line default
             #line hidden
             this.Write(");\r\n                ");
             
-            #line 94 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 104 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 95 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 105 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (mto.NotNull) {
             
             #line default
             #line hidden
             this.Write("                mto.NotNullable(true);\r\n                ");
             
-            #line 97 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 107 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 98 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 108 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (mto.Cascade != null) {
             
             #line default
             #line hidden
             this.Write("                mto.Cascade(");
             
-            #line 99 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 109 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(mto.Cascade));
             
             #line default
             #line hidden
             this.Write(");\r\n                ");
             
-            #line 100 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 110 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 101 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 111 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (mto.Unique != null) {
             
             #line default
             #line hidden
             this.Write("                mto.Unique(");
             
-            #line 102 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 112 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(mto.Unique));
             
             #line default
             #line hidden
             this.Write(");\r\n                ");
             
-            #line 103 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 113 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("            });\r\n\r\n            ");
             
-            #line 106 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 116 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("            ");
             
-            #line 107 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 117 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  foreach (var bag in Model.Collections) {
             
             #line default
             #line hidden
             this.Write("            ");
             
-            #line 108 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 118 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(bag.CollectionType.ToString()));
             
             #line default
             #line hidden
             this.Write("(x => x.");
             
-            #line 108 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 118 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(bag.Name));
             
             #line default
             #line hidden
             this.Write(", bag => { \r\n                ");
             
-            #line 109 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 119 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (bag.Table != null) {
             
             #line default
             #line hidden
             this.Write("                bag.Table(\"");
             
-            #line 110 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 120 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(bag.Table));
             
             #line default
             #line hidden
             this.Write("\"); \r\n                ");
             
-            #line 111 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 121 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 112 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 122 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (bag.Lazy) {
             
             #line default
             #line hidden
             this.Write("                bag.Lazy(CollectionLazy.Lazy);\r\n                ");
             
-            #line 114 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 124 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 } else {
             
             #line default
             #line hidden
             this.Write("                bag.Lazy(CollectionLazy.NoLazy);\r\n                ");
             
-            #line 116 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 126 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 117 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 127 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (bag.Inverse) {
             
             #line default
             #line hidden
             this.Write("                bag.Inverse(true);\r\n                ");
             
-            #line 119 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 129 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 120 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 130 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (bag.Cascade != null) {
             
             #line default
             #line hidden
             this.Write("                bag.Cascade(");
             
-            #line 121 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 131 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(bag.Cascade));
             
             #line default
             #line hidden
             this.Write(");\r\n                ");
             
-            #line 122 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 132 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 123 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 133 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if(bag.KeyColumn != null) {
             
             #line default
             #line hidden
             this.Write("                bag.Key(k => k.Column(\"");
             
-            #line 124 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 134 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(bag.KeyColumn));
             
             #line default
             #line hidden
             this.Write("\"));\r\n                ");
             
-            #line 125 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 135 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 126 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 136 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if(bag.OrderBy != null) {
             
             #line default
             #line hidden
             this.Write("                bag.OrderBy(\"");
             
-            #line 127 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 137 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(bag.OrderBy));
             
             #line default
             #line hidden
             this.Write("\");\r\n                ");
             
-            #line 128 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 138 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
+            
+            #line default
+            #line hidden
+            
+            #line 139 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ if (bag.BatchSize != null) {
+            
+            #line default
+            #line hidden
+            this.Write("                bag.BatchSize(");
+            
+            #line 140 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(bag.BatchSize));
+            
+            #line default
+            #line hidden
+            this.Write(");\r\n");
+            
+            #line 141 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+ } 
             
             #line default
             #line hidden
             this.Write("            }, rel => {\r\n                    ");
             
-            #line 130 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 143 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (bag.RelType != null) {
             
             #line default
             #line hidden
             this.Write("                    rel.");
             
-            #line 131 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 144 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(bag.RelType));
             
             #line default
             #line hidden
             this.Write("(\r\n                    ");
             
-            #line 132 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 145 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                    ");
             
-            #line 133 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 146 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (bag.RelColumn != null) {
             
             #line default
             #line hidden
             this.Write("                        mtm => mtm.Column(\"");
             
-            #line 134 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 147 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(bag.RelColumn));
             
             #line default
             #line hidden
             this.Write("\")\r\n                    ");
             
-            #line 135 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 148 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                    ");
             
-            #line 136 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 149 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (bag.NotFound != null) {
             
             #line default
             #line hidden
-            this.Write("                        mtm => mtm.NotFound(\"");
+            this.Write("                        mtm.NotFound(");
             
-            #line 137 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 150 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(bag.NotFound));
             
             #line default
             #line hidden
-            this.Write("\")\r\n                    ");
+            this.Write(")\r\n                    ");
             
-            #line 138 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 151 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("                    );\r\n");
             
-            #line 140 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 153 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (bag.CompositeElement != null) {
             
             #line default
             #line hidden
             this.Write("               rel.Component(cmp =>\r\n                    {\r\n");
             
-            #line 143 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 156 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             
-            #line 144 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 157 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (bag.CompositeElement?.Parent != null) {
             
             #line default
             #line hidden
             this.Write("                    cmp.Parent(x => x.");
             
-            #line 145 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 158 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(bag.CompositeElement.Parent));
             
             #line default
             #line hidden
             this.Write(");\r\n");
             
-            #line 146 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 159 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             
-            #line 147 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 160 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  foreach (var childProperty in bag.CompositeElement?.Properties ?? new List<Property>()) {
             
             #line default
             #line hidden
             this.Write("                        cmp.Property(x => x.");
             
-            #line 148 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 161 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(childProperty.Name));
             
             #line default
             #line hidden
             this.Write(", ptp => ptp.Column(\"");
             
-            #line 148 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 161 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(childProperty.ColumnName));
             
             #line default
             #line hidden
             this.Write("\"));\r\n");
             
-            #line 149 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 162 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             
-            #line 150 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 163 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  if (bag.CompositeElement != null) {
             
             #line default
             #line hidden
             this.Write("                    });\r\n");
             
-            #line 152 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 165 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("\r\n            });\r\n        ");
             
-            #line 155 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 168 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  } 
             
             #line default
             #line hidden
             this.Write("        }\r\n    }\r\n\r\n    ");
             
-            #line 159 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 172 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
  foreach (var subclass in Model.Subclasses) {
             
             #line default
             #line hidden
             this.Write("    [Localizable(false)]\r\n    public class ");
             
-            #line 161 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 174 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(subclass.ClassName));
             
             #line default
             #line hidden
             this.Write("Map : SubclassMapping<");
             
-            #line 161 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 174 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(subclass.FullClassName));
             
             #line default
             #line hidden
             this.Write("> \r\n    {\r\n        public ");
             
-            #line 163 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 176 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(subclass.ClassName));
             
             #line default
             #line hidden
             this.Write("Map()\r\n        {\r\n            ");
             
-            #line 165 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 178 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 if(subclass.DiscriminatorValue != null){
             
             #line default
             #line hidden
             this.Write("            DiscriminatorValue(");
             
-            #line 166 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 179 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(subclass.DiscriminatorValue));
             
             #line default
             #line hidden
             this.Write(");\r\n            ");
             
-            #line 167 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 180 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default
             #line hidden
             this.Write("        }\r\n    }\r\n    ");
             
-            #line 170 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
+            #line 183 "C:\projects\HbmToConform\HbmToConform\MapTemplate.tt"
 }
             
             #line default

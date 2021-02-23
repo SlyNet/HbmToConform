@@ -18,8 +18,12 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
             Lazy(<#= Model.Lazy.ToString().ToLower() #>); 
             Id(x => x.<#= Model.Id.Name #>, idMap =>
             {
+<# if (Model.Id.Generator != null) {#>
                 idMap.Generator(<#= Model.Id.Generator #>);
+<# } #>
+<# if (Model.Id.ColumnName != null) {#>
                 idMap.Column("<#= Model.Id.ColumnName #>");
+<# } #>
                 <# if (Model.Id.UnsavedValue != null) {#>
                 idMap.UnsavedValue(<#= Model.Id.UnsavedValue #>);
                 <# } #>
@@ -27,6 +31,9 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
                 idMap.Access(<#=Model.Id.Access #>);
                 <#}#>
             });
+            <# if (Model.BatchSize != null) {#>
+             BatchSize(<#=Model.BatchSize#>);
+            <# } #>
 
             <# if (Model.Discriminator != null) {#>
                 Discriminator(d => d.Column("<#= Model.Discriminator.ColumnName #>"));
@@ -57,6 +64,9 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
                 <#}#>
                 <# if(ptp.Length != null) {#>
                 clm.Length(<#=ptp.Length#>);
+                <#}#>
+                <# if(ptp.Formula != null) {#>
+                clm.Formula("<#=ptp.Formula#>");
                 <#}#>
                 <# if(ptp.Access != null) {#>
                 clm.Access(<#=ptp.Access #>);
@@ -126,6 +136,9 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
                 <# if(bag.OrderBy != null) {#>
                 bag.OrderBy("<#=bag.OrderBy#>");
                 <#}#>
+<# if (bag.BatchSize != null) {#>
+                bag.BatchSize(<#=bag.BatchSize#>);
+<# } #>
             }, rel => {
                     <# if (bag.RelType != null) {#>
                     rel.<#=bag.RelType#>(
@@ -134,7 +147,7 @@ namespace <#= Model.FullType.Replace("." + Model.DomainClassName, "") #>
                         mtm => mtm.Column("<#=bag.RelColumn#>")
                     <#}#>
                     <# if (bag.NotFound != null) {#>
-                        mtm => mtm.NotFound("<#=bag.NotFound#>")
+                        mtm.NotFound(<#=bag.NotFound#>)
                     <#}#>
                     );
 <# if (bag.CompositeElement != null) {#>

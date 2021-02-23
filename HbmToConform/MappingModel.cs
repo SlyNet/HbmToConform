@@ -28,5 +28,6 @@ namespace HbmToConform
         public string FullType { get; set; }
         public DiscriminatorModel Discriminator { get; set; }
         public List<SubclassModel> Subclasses { get; set; }
+        public string BatchSize { get; set; }
     }
 }
